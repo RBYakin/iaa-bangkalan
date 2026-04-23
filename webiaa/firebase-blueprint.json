@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Officer": {
+      "title": "Officer",
+      "description": "Data pengurus Cabang Bangkalan",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nama Lengkap" },
+        "title": { "type": "string", "description": "Jabatan (e.g. Ketua Umum)" },
+        "image": { "type": "string", "format": "uri", "description": "URL Foto" },
+        "division": { "type": "string", "description": "Nama Divisi (e.g. BPH, Kaderisasi)" },
+        "rank": { "type": "number", "description": "Urutan tampilan" }
+      },
+      "required": ["name", "title", "image", "division"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "Hall of Fame prestasi alumni",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nama Peraih Prestasi" },
+        "award": { "type": "string", "description": "Nama Penghargaan" },
+        "level": { "type": "string", "description": "Tingkat Lomba" },
+        "image": { "type": "string", "format": "uri", "description": "URL Foto" },
+        "year": { "type": "string", "description": "Tahun Prestasi" }
+      },
+      "required": ["name", "award", "level", "image", "year"]
+    },
+    "Documentation": {
+      "title": "Documentation",
+      "description": "Foto kegiatan organisasi",
+      "type": "object",
+      "properties": {
+        "caption": { "type": "string", "description": "Keterangan Foto" },
+        "image": { "type": "string", "format": "uri", "description": "URL Foto" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Waktu diunggah" }
+      },
+      "required": ["caption", "image"]
+    },
+    "Work": {
+      "title": "Work",
+      "description": "Karya Selembaran",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Judul Karya" },
+        "image": { "type": "string", "format": "uri", "description": "URL Foto" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Waktu diunggah" }
+      },
+      "required": ["title", "image"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Data pengguna aplikasi",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "officers/{officerId}": {
+      "schema": "Officer",
+      "description": "Daftar pengurus"
+    },
+    "achievements/{achievementId}": {
+      "schema": "Achievement",
+      "description": "Daftar prestasi"
+    },
+    "documentation/{docId}": {
+      "schema": "Documentation",
+      "description": "Daftar dokumentasi kegiatan"
+    },
+    "works/{workId}": {
+      "schema": "Work",
+      "description": "Daftar karya selembaran"
+    },
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Data profil pengguna"
+    }
+  }
+}

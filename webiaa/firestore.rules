@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn();
+    }
+
+    function isAdmin() {
+      return isVerified() && 
+        (request.auth.token.email == 'yakinslax.129@gmail.com' || 
+         request.auth.token.email == 'admin@iaabangkalan.or.id' ||
+         request.auth.token.email == 'iaa_admin@gmail.com' ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Officers ---
+    match /officers/{officerId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(officerId);
+    }
+
+    // --- Achievements ---
+    match /achievements/{achievementId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(achievementId);
+    }
+
+    // --- Documentation ---
+    match /documentation/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(docId);
+    }
+
+    // --- Works ---
+    match /works/{workId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(workId);
+    }
+
+    // --- Users ---
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isSignedIn() && request.auth.uid == userId && (
+        !exists(/databases/$(database)/documents/users/$(userId)) || 
+        request.resource.data.role == resource.data.role // Prevent self-elevating role
+      );
+    }
+  }
+}
